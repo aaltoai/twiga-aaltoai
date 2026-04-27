@@ -1,0 +1,6 @@
+streamlit>=1.30.0
+pandas>=2.0
+rouge-score>=0.1.2
+nltk>=3.8
+plotly>=5.0
+python-dotenv>=1.0
