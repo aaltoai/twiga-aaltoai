@@ -1,10 +1,14 @@
 # Evaluation runner + LLM-as-judge metrics
-pandas
+pandas>=2.0
 openai
 ragas
-python-dotenv
+python-dotenv>=1.0
 langchain-anthropic
 
 # Lexical metrics (metrics/lexical_metrics/)
-rouge-score
-nltk
+rouge-score>=0.1.2
+nltk>=3.8
+
+# Streamlit dashboard
+streamlit>=1.30.0
+plotly>=5.0
