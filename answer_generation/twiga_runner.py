@@ -8,7 +8,7 @@ from typing import TypedDict
 from unittest.mock import AsyncMock, patch
 
 from dotenv import load_dotenv
-load_dotenv('/home/athul/my_workspace/twiga_project/twiga/.env')
+load_dotenv()
 
 from app.database.models import User, Message, TeacherClass, Class, Subject
 from app.database.enums import UserState, MessageRole, GradeLevel, SubjectName

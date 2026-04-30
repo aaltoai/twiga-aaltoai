@@ -11,11 +11,20 @@ import asyncio
 import os
 from pathlib import Path
 import pandas as pd
+from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from ragas.llms import llm_factory
 from ragas.embeddings import OpenAIEmbeddings
 
-from metrics.llm_as_a_judge_metrics import Faithfulness, AnswerRelevancy, LLMAsAJudgeMetric
+load_dotenv(override=True)
+
+from metrics.llm_as_a_judge_metrics import (
+    Faithfulness,
+    AnswerRelevancy,
+    CustomCorrectness,
+    FactualCorrectness,
+    LLMAsAJudgeMetric,
+)
 
 DATA_DIR = Path(__file__).resolve().parent / "data" / "current"
 INPUT_CSV = str(DATA_DIR / "testset_with_twiga_answers.csv")
@@ -31,6 +40,9 @@ def build_metrics() -> list[LLMAsAJudgeMetric]:
     return [
         Faithfulness(llm=llm),
         AnswerRelevancy(llm=llm, embeddings=embeddings),
+        CustomCorrectness(llm=llm, client=client, model=JUDGE_MODEL),
+        FactualCorrectness(llm=llm, mode="f1"),
+        FactualCorrectness(llm=llm, mode="recall"),
     ]
 
 
