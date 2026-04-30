@@ -1,6 +1,7 @@
 import json
 import os
 import random
+from pathlib import Path
 
 import pandas as pd
 from langchain_anthropic import ChatAnthropic
@@ -9,8 +10,10 @@ from ragas.embeddings import OpenAIEmbeddings
 from ragas.llms import LangchainLLMWrapper
 from ragas.testset import TestsetGenerator
 
+DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "current"
+
 # --- Load and sample chunks ---
-with open("chunks_export.jsonl") as f:
+with open(DATA_DIR / "chunks_export.jsonl") as f:
     all_chunks = [json.loads(line) for line in f]
 
 random.seed(42)
@@ -24,7 +27,7 @@ embeddings = OpenAIEmbeddings(client=OpenAI())
 generator = TestsetGenerator(llm=llm, embedding_model=embeddings)
 
 # --- Generate testset with incremental saving ---
-SAVE_PATH = "testset_progress_v1.csv"
+SAVE_PATH = str(DATA_DIR / "testset_progress_v1.csv")
 results = []
 
 if os.path.exists(SAVE_PATH):
