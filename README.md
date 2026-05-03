@@ -45,6 +45,31 @@ Pluggable metric classes built on top of Ragas. Adding a new metric = one new fi
 
 Top-level runner. Loads `data/current/testset_with_twiga_answers.csv`, applies each metric to every row, writes scores to `data/current/rag_evaluation_results.csv`, prints a summary. Resume-safe per metric. Judge LLM: `gpt-4o-mini` (deliberately *not* DeepSeek to avoid self-preference bias against the DeepSeek-written reference answers — see `analysis.md`).
 
+## Setup
+
+Requires Python ≥ 3.12 and [uv](https://docs.astral.sh/uv/).
+
+This repo declares the upstream [twiga](../twiga) project as an editable path dependency (`../../twiga` in `pyproject.toml`), so clone the two repos into a layout where `twiga/` sits two levels above this directory:
+
+```
+parent/
+├── twiga/                       # upstream — clone separately
+└── aaltoai_github_repo/
+    └── twiga-aaltoai/           # this repo
+```
+
+Install everything (creates `.venv`, resolves all deps, installs `twiga` in editable mode):
+
+```bash
+uv sync
+```
+
+Then copy `.env.example` → `.env` and fill in keys:
+- **Pure evaluation** (`evaluation.py` and metrics): only the three API keys at the top of `.env.example` are needed.
+- **Answer generation** (`answer_generation/`): also requires the Twiga app's env vars (database, LLM provider, WhatsApp/Meta) — see `.env.example` for the full list. Easiest is to copy these from the upstream Twiga repo's `.env`.
+
+Add new dependencies with `uv add <pkg>` (don't `pip install` — it bypasses `pyproject.toml` and `uv.lock`).
+
 ## How to run
 
 ```bash

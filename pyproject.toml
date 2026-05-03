@@ -1,0 +1,22 @@
+[project]
+name = "twiga-aaltoai"
+version = "0.1.0"
+description = "Evaluation harness for the Twiga agent"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "twiga",
+    "pandas",
+    "openai",
+    "ragas",
+    "python-dotenv",
+    "langchain-anthropic",
+    "rouge-score",
+    "nltk",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+twiga = { path = "../../twiga", editable = true }
