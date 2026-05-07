@@ -7,15 +7,44 @@ env/
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 *.egg-info/
+*.egg
+MANIFEST
+.installed.cfg
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# Build / distribution
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+wheels/
+share/python-wheels/
+
+# Test / coverage
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+nosetests.xml
+.hypothesis/
 
 # Environment / secrets
 .env
 .env.*
 !.env.example
+.envrc
+
+# Streamlit
+.streamlit/secrets.toml
 
 # OS / editor
 .DS_Store

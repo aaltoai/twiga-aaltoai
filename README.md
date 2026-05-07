@@ -45,7 +45,31 @@ Pluggable metric classes built on top of Ragas. Adding a new metric = one new fi
 
 Top-level runner. Loads `data/current/testset_with_twiga_answers.csv`, applies each metric to every row, writes scores to `data/current/rag_evaluation_results.csv`, prints a summary. Resume-safe per metric. Judge LLM: `gpt-4o-mini` (deliberately *not* DeepSeek to avoid self-preference bias against the DeepSeek-written reference answers — see `analysis.md`).
 
+## Setup
+
+Requires [uv](https://docs.astral.sh/uv/getting-started/installation/).
+
+```bash
+# Clone and enter the repo
+git clone <repo-url>
+cd twiga-aaltoai
+
+# Install dependencies and create virtual environment
+uv sync
+
+# Copy and fill in the environment variables
+cp .env.example .env
+```
+
 ## How to run
+
+**Streamlit dashboard:**
+
+```bash
+uv run streamlit run streamlit_app.py
+```
+
+**Pipeline scripts:**
 
 ```bash
 # 1. Generate the testset (once, slow)

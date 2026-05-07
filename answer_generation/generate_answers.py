@@ -14,7 +14,7 @@ from twiga_runner import run_twiga
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "current"
 INPUT_CSV = str(DATA_DIR / "testset_rewritten_questions.csv")
-OUTPUT_CSV = str(DATA_DIR / "testset_with_twiga_answers.csv")
+OUTPUT_CSV = str(DATA_DIR / "testset_with_twiga_answers_2.csv")
 
 OUTPUT_COLS = [
     "user_input",
@@ -31,6 +31,7 @@ async def main():
     if os.path.exists(OUTPUT_CSV):
         df = pd.read_csv(OUTPUT_CSV)
         print(f"Resuming from {OUTPUT_CSV}")
+        # maybe create another file instead of overwriting? for safety
     else:
         df_in = pd.read_csv(INPUT_CSV)
         df = pd.DataFrame({

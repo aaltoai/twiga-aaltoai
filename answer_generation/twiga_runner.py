@@ -6,13 +6,17 @@ build their own batching/persistence on top of this.
 
 from typing import TypedDict
 from unittest.mock import AsyncMock, patch
+# import os
+
+# Override database URL before any imports to use localhost
+# os.environ["DATABASE_URL"] = "postgresql+asyncpg://postgres:password@localhost:5432/test"
 
 from dotenv import load_dotenv
 load_dotenv()
 
 from app.database.models import User, Message, TeacherClass, Class, Subject
 from app.database.enums import UserState, MessageRole, GradeLevel, SubjectName
-from app.services.llm_service import llm_client
+from app.clients.llm_client import llm_client
 
 
 class TwigaResult(TypedDict):

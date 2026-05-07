@@ -1,69 +1,16 @@
-"""Answer generation using Twiga's llm_client.
+"""Answer generation — delegates to answer_generation/twiga_runner.py."""
 
-Adapted from generate_answer.py — uses mock user objects to call
-llm_client.generate_response() without real DB/WhatsApp side effects.
-"""
-
-import asyncio
+import sys
+from pathlib import Path
 from typing import Callable, Optional
 
 import pandas as pd
-from unittest.mock import AsyncMock, patch
 
-from app.database.models import User, Message, TeacherClass, Class, Subject
-from app.database.enums import UserState, MessageRole, GradeLevel, SubjectName
-from app.services.llm_service import llm_client
+# Make answer_generation/ importable as a namespace package
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from answer_generation.twiga_runner import run_twiga  # noqa: E402
 
 from eval.metrics import compute_all_metrics
-from eval.testset import get_reference_columns
-
-
-def setup_mock_user() -> User:
-    """Create mock User/Class/Subject/TeacherClass objects for evaluation."""
-    mock_subject = Subject()
-    mock_subject.name = SubjectName.geography
-
-    mock_class = Class()
-    mock_class.id = 1
-    mock_class.grade_level = GradeLevel.os2
-    mock_class.subject_ = mock_subject
-
-    mock_teacher_class = TeacherClass()
-    mock_teacher_class.class_ = mock_class
-
-    mock_user = User(
-        id=9999,
-        wa_id="eval_user",
-        name="Eval Teacher",
-        state=UserState.active,
-        class_info={"geography": ["os2"]},
-    )
-    mock_user.taught_classes = [mock_teacher_class]
-    return mock_user
-
-
-_mock_user = setup_mock_user()
-
-
-async def generate_answer(question: str) -> Optional[str]:
-    """Call Twiga's llm_client to generate an answer for a single question."""
-    msg = Message(
-        user_id=_mock_user.id,
-        role=MessageRole.user,
-        content=question,
-    )
-    with patch.object(
-        llm_client, "_tool_call_notification", new=AsyncMock(return_value=None)
-    ):
-        result = await llm_client.generate_response(_mock_user, msg)
-
-    if not result:
-        return None
-
-    for m in reversed(result):
-        if m.role == MessageRole.assistant and m.content:
-            return m.content
-    return None
 
 
 async def run_evaluation(
@@ -98,7 +45,8 @@ async def run_evaluation(
             progress_callback(i, total, f"Generating answer for question {i + 1}/{total}...")
 
         try:
-            answer = await generate_answer(question)
+            result = await run_twiga(question)
+            answer = result["twiga_answer"]
         except Exception as e:
             answer = f"[ERROR] {e}"
 

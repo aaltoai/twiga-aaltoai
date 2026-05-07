@@ -40,36 +40,9 @@ except Exception as e:
 with st.expander("Preview testset"):
     st.dataframe(testset_df.head(20), use_container_width=True)
 
-# ── Model Configuration (read-only from Twiga's settings) ──────────────────
-
-st.header("2. Model Configuration")
-
-try:
-    from app.config import llm_settings, embedding_settings
-
-    llm_model = llm_settings.llm_name
-    llm_provider = llm_settings.provider.value
-    embedding_model = embedding_settings.embedder_name
-    embedding_provider = embedding_settings.provider.value
-except Exception:
-    llm_model = "unknown (Twiga not importable)"
-    llm_provider = "unknown"
-    embedding_model = "unknown"
-    embedding_provider = "unknown"
-
-col1, col2 = st.columns(2)
-with col1:
-    st.text_input("LLM Model", value=llm_model, disabled=True)
-    st.text_input("LLM Provider", value=llm_provider, disabled=True)
-with col2:
-    st.text_input("Embedding Model", value=embedding_model, disabled=True)
-    st.text_input("Embedding Provider", value=embedding_provider, disabled=True)
-
-st.caption("Model configuration is read from Twiga's `.env` file. Change it there to use a different model.")
-
 # ── Run Controls ────────────────────────────────────────────────────────────
 
-st.header("3. Run")
+st.header("2. Run")
 
 save_results_toggle = st.checkbox("Save results after evaluation", value=True)
 
@@ -107,9 +80,6 @@ if st.button("🚀 Start Evaluation", type="primary"):
                 **{m: results_df[m].mean() for m in metric_cols},
             }])
             metadata = {
-                "llm_model_name": llm_model,
-                "embedding_model_name": embedding_model,
-                "llm_provider": llm_provider,
                 "evaluated_at": evaluated_at,
                 "testset_name": selected_name,
                 "num_questions": len(results_df),
@@ -130,7 +100,7 @@ if st.button("🚀 Start Evaluation", type="primary"):
 
 if st.session_state.eval_results is not None:
     results_df = st.session_state.eval_results
-    st.header("4. Results")
+    st.header("3. Results")
 
     # Summary metrics
     metric_cols = ["rouge1_f", "rouge2_f", "rougeL_f", "bleu"]

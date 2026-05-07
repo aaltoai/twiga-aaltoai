@@ -12,6 +12,9 @@ dependencies = [
     "nltk>=3.8",
     "plotly>=5.0",
     "python-dotenv>=1.0",
+    "openai",
+    "ragas",
+    "langchain-anthropic",
     "twiga",
 ]
 
