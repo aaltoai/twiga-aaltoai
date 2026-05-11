@@ -52,3 +52,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Evaluation results (generated output)
+data/results/*/
