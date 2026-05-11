@@ -16,7 +16,7 @@ load_dotenv()
 
 from app.database.models import User, Message, TeacherClass, Class, Subject
 from app.database.enums import UserState, MessageRole, GradeLevel, SubjectName
-from app.clients.llm_client import llm_client
+from app.services.llm_service import llm_client
 
 
 class TwigaResult(TypedDict):
