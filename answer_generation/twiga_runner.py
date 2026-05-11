@@ -16,7 +16,22 @@ load_dotenv()
 
 from app.database.models import User, Message, TeacherClass, Class, Subject
 from app.database.enums import UserState, MessageRole, GradeLevel, SubjectName
-from app.services.llm_service import llm_client
+from langchain_core.messages import HumanMessage as LCHumanMessage
+from app.clients.llm_client import llm_client, _prepare_message_for_together
+import app.clients.client_base as client_base
+import app.clients.llm_client as llm_client_module
+
+
+def _fixed_prepare_message_for_together(message):
+    """Wrap the Twiga helper to replace empty-string content with None.
+
+    Together AI rejects assistant messages where content is "" (empty string).
+    When the model responds with only tool calls, content should be None.
+    """
+    result = _prepare_message_for_together(message)
+    if isinstance(result, LCHumanMessage) and result.content == "":
+        return LCHumanMessage(content=" ", additional_kwargs=result.additional_kwargs)
+    return result
 
 
 class TwigaResult(TypedDict):
@@ -64,8 +79,9 @@ async def run_twiga(question: str) -> TwigaResult:
         role=MessageRole.user,
         content=question,
     )
-    # mock _tool_call_notification to skip DB writes + WhatsApp sends
-    with patch.object(llm_client, "_tool_call_notification", new=AsyncMock(return_value=None)):
+    with patch.object(llm_client, "_tool_call_notification", new=AsyncMock(return_value=None)), \
+         patch.object(client_base, "get_user_message_history", new=AsyncMock(return_value=[])), \
+         patch.object(llm_client_module, "_prepare_message_for_together", side_effect=_fixed_prepare_message_for_together):
         result = await llm_client.generate_response(_mock_user, msg)
 
     out: TwigaResult = {
